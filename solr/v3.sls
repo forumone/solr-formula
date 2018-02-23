@@ -2,7 +2,7 @@
 apache-solr-3.6.2:
   file.managed:
     - name: /opt/apache-solr-3.6.2.tgz
-    - source: https://archive.apache.org/dist/lucene/solr/3.6.2/apache-solr-3.6.2.tgz
+    - source: https://s3.amazonaws.com/f1vagrant/apache-solr-3.6.2.tgz
     - source_hash: md5=e9c51f51265b070062a9d8ed50b84647
 
 # Extract it
