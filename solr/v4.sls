@@ -2,7 +2,7 @@
 solr-4.10.4:
   file.managed:
     - name: /opt/solr-4.10.4.tgz
-    - source: http://archive.apache.org/dist/lucene/solr/4.10.4/solr-4.10.4.tgz
+    - source: https://s3.amazonaws.com/f1vagrant/solr-4.10.4.tgz
     - source_hash: md5=8ae107a760b3fc1ec7358a303886ca06
     - unless: test -f /opt/solr-4.10.4.tgz
 
