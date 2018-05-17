@@ -31,8 +31,8 @@ extract-solr:
   file.managed:
     - source: salt://solr/files/solr.xml
     - mode: 644
-    # Don't overwrite if already exists
-    - unless: test -f /opt/solr/example/multicore/solr.xml
+    # Don't overwrite if already exists and contains vagrant
+    - unless: grep -q vagrant /opt/solr/example/multicore/solr.xml
     - watch_in:
       - service: jetty-service
 
