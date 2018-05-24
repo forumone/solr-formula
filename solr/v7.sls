@@ -38,3 +38,13 @@ install-solr:
     - source: {{ salt['pillar.get']('solr:conf', 'salt://solr/files/v7/core') }}
     - user: root
 
+# Sudo file to allow restarting solr
+/etc/sudoers.d/solr:
+  file.managed:
+    - source: salt://solr/files/v7/sudoers
+    - user: root
+    - group: root
+    - mode: 440
+    - template: jinja
+    - context:
+        user: {{ salt['pillar.get']('project', 'root') }}
