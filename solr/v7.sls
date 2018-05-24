@@ -6,12 +6,23 @@ solr-7.3.1:
     - source_hash: md5=042a6c0d579375be1a8886428f13755f
     - unless: test -f /opt/solr-7.3.1.tgz
 
-# Extract it
-extract-solr:
+# Extract solr install file
+extract-solr-install:
   cmd:
     - cwd: /opt
     - names:
-      - tar zxf solr-7.3.1.tgz
+      - tar xzf solr-7.3.1.tgz solr-7.3.1/bin/install_solr_service.sh --strip-components=2
+    - run
+    - require:
+      - file: solr-7.3.1
+    - unless: test -d /opt/solr-7.3.1
+
+# Install solr
+install-solr:
+  cmd:
+    - cwd: /opt
+    - names:
+      - bash ./install_solr_service.sh solr-7.3.1.tgz
     - run
     - require:
       - file: solr-7.3.1
@@ -26,3 +37,4 @@ extract-solr:
   file.recurse:
     - source: {{ salt['pillar.get']('solr:conf', 'salt://solr/files/v7/core') }}
     - user: root
+
