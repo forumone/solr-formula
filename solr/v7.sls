@@ -33,10 +33,18 @@ install-solr:
   file.symlink:
     - target: /opt/solr-7.3.1
 
-/opt/solr/server/solr/vagrant:
+# Create core
+create-solr-core:
+  cmd:
+    - cwd: /opt
+    - names:
+      - bash bin/solr create {{ salt['pillar.get']('siteuser', 'vagrant') }}
+    - user: solr
+
+/var/solr/data/{{ salt['pillar.get']('siteuser', 'vagrant') }}:
   file.recurse:
     - source: {{ salt['pillar.get']('solr:conf', 'salt://solr/files/v7/core') }}
-    - user: root
+    - user: solr
 
 # Sudo file to allow restarting solr
 /etc/sudoers.d/solr:
