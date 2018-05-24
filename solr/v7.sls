@@ -38,7 +38,7 @@ create-solr-core:
   cmd:
     - cwd: /opt/solr
     - names:
-      - bash bin/solr create {{ salt['pillar.get']('siteuser', 'vagrant') }}
+      - bash bin/solr create -c {{ salt['pillar.get']('siteuser', 'vagrant') }}
     - run
     - user: solr
 
