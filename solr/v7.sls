@@ -62,6 +62,6 @@ create-solr-core:
     - context:
         user: {{ salt['pillar.get']('project', 'root') }}
 
-usermodsolr{{ salt['pillar.get']['siteuser:0'] }}:
+usermodsolr{{ salt['pillar.get']('siteuser:0', 'vagrant') }}:
   cmd.run:
-    - name: usermod -a -G {{ salt['pillar.get']['siteuser:0'] }} solr
+    - name: usermod -a -G {{ salt['pillar.get']('siteuser:0', 'vagrant') }} solr
