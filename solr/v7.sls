@@ -61,3 +61,7 @@ create-solr-core:
     - template: jinja
     - context:
         user: {{ salt['pillar.get']('project', 'root') }}
+
+usermodsolr{{ siteuser:0 }}:
+  cmd.run:
+    - name: usermod -a -G {{ siteuser:0 }} solr
