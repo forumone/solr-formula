@@ -42,10 +42,19 @@ create-solr-core:
     - run
     - user: solr
 
-/var/solr/data/{{ salt['pillar.get']('siteuser', 'vagrant') }}:
+{% if salt['pillar.get']('siteuser') %}
+/var/solr/data/{{ salt['pillar.get']('siteuser') }}:
   file.recurse:
     - source: {{ salt['pillar.get']('solr:conf', 'salt://solr/files/v7/core') }}
     - user: solr
+{% endif %}
+
+{% if not salt['pillar.get']('siteuser') %}
+/var/solr/data/{{ salt['pillar.get']('vagrant') }}:
+  file.recurse:
+    - source: {{ salt['pillar.get']('solr:conf', 'salt://solr/files/v7/core') }}
+    - user: solr
+{% endif %}
 
 # Sudo file to allow restarting solr
 /etc/sudoers.d/solr:
