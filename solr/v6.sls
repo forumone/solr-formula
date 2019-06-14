@@ -1,17 +1,28 @@
 # Get solr
 solr-6.6.6:
   file.managed:
-    - name: /opt/solr-6.6.6-src.tgz
+    - name: /opt/solr-6.6.6.tgz
     - source: https://archive.apache.org/dist/lucene/solr/6.6.6/solr-6.6.6.tgz
     - source_hash: md5=6a97b6aa2d713e39ea7521cc3468e046
-    - unless: test -f /opt/solr-6.6.6-src.tgz
+    - unless: test -f /opt/solr-6.6.6.tgz
 
-# Extract it
-extract-solr:
+# Extract solr install file
+extract-solr-install:
   cmd:
     - cwd: /opt
     - names:
-      - tar xzf solr-6.6.6-src.tgz
+      - tar xzf solr-6.6.6.tgz solr-6.6.6/bin/install_solr_service.sh --strip-components=2
+    - run
+    - require:
+      - file: solr-6.6.6
+    - unless: test -d /opt/solr-6.6.6
+
+# Install solr
+install-solr:
+  cmd:
+    - cwd: /opt
+    - names:
+      - bash ./install_solr_service.sh solr-6.6.6.tgz
     - run
     - require:
       - file: solr-6.6.6
@@ -22,42 +33,27 @@ extract-solr:
   file.symlink:
     - target: /opt/solr-6.6.6
 
-/opt/solr/example/multicore/vagrant:
+# Create core
+create-solr-core:
+  cmd:
+    - cwd: /opt/solr
+    - names:
+      - bash bin/solr create -c {{ salt['pillar.get']('siteuser', 'vagrant') }}
+    - run
+    - user: solr
+
+/var/solr/data/{{ salt['pillar.get']('siteuser', 'vagrant') }}:
   file.recurse:
-    - source: {{ salt['pillar.get']('solr:conf', 'salt://solr/files/v6') }}
+    - source: {{ salt['pillar.get']('solr:conf', 'salt://solr/files/v6/core') }}
+    - user: solr
+
+# Sudo file to allow restarting solr
+/etc/sudoers.d/solr:
+  file.managed:
+    - source: salt://solr/files/v6/sudoers
     - user: root
-
-/opt/solr/example/multicore/solr.xml:
-  file.managed:
-    - source: salt://solr/files/solr.xml
-    - mode: 644
-    # Don't overwrite if already exists
-    - unless: test -f /opt/solr/example/multicore/solr.xml
-    - watch_in:
-      - service: jetty-service
-
-# init
-/etc/init.d/jetty:
-  file.managed:
-    - source: salt://solr/files/jetty-init
-    - mode: 744
-
-/sbin/chkconfig --add jetty:
-  cmd.run:
-    - unless: /sbin/chkconfig | grep -q jetty
-    - require:
-      - file: /etc/init.d/jetty
-
-jetty-service:
-  service:
-    - name: jetty
-    - enable: True
-    - sig: Dsolr
-    - running
-
-# logrotate
-/etc/logrotate.d/jetty:
-  file.managed:
-    - source: salt://solr/files/jetty-logrotate
-    - mode: 744
-
+    - group: root
+    - mode: 440
+    - template: jinja
+    - context:
+        user: {{ salt['pillar.get']('project', 'root') }}
