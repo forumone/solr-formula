@@ -2,7 +2,7 @@
 solr-6.6.6:
   file.managed:
     - name: /opt/solr-6.6.6-src.tgz
-    - source: https://archive.apache.org/dist/lucene/solr/6.6.6/solr-6.6.6-src.tgz
+    - source: https://archive.apache.org/dist/lucene/solr/6.6.6/solr-6.6.6.tgz
     - source_hash: md5=6a97b6aa2d713e39ea7521cc3468e046
     - unless: test -f /opt/solr-6.6.6-src.tgz
 
