@@ -38,11 +38,11 @@ create-solr-core:
   cmd:
     - cwd: /opt/solr
     - names:
-      - bash bin/solr create -c {{ salt['pillar.get']('siteuser', 'vagrant') }}
+      - bash bin/solr create -c {{ salt['pillar.get']('project', 'vagrant') }}
     - run
     - user: solr
 
-/var/solr/data/{{ salt['pillar.get']('siteuser', 'vagrant') }}:
+/var/solr/data/{{ salt['pillar.get']('project', 'vagrant') }}:
   file.recurse:
     - source: {{ salt['pillar.get']('solr:conf', 'salt://solr/files/v7/core') }}
     - user: solr
